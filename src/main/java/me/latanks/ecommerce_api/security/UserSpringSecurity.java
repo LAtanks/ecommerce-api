@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class UserSpringSecurity implements UserDetails, CredentialsContainer {
+public class UserSpringSecurity implements UserDetails {
     private User user;
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -57,10 +57,6 @@ public class UserSpringSecurity implements UserDetails, CredentialsContainer {
         return true;
     }
 
-    @Override
-    public void eraseCredentials() {
-
-    }
 
     public boolean hasRole(Roles role) {
         return getAuthorities().contains(new SimpleGrantedAuthority(role.getDescription()));

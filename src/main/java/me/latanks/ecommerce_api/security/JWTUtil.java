@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import me.latanks.ecommerce_api.models.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -13,23 +14,24 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Component
 public class JWTUtil {
 
-    @Value("jwt.expiration")
+    @Value("${jwt.expiration}")
     private Long jwtExpiration;
-    @Value("jwt.secret")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private String extractUsername(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
 
-    private String generateToken(Map<String, Object> claims, User userDetails) {
+    public String generateToken(Map<String, Object> claims, User userDetails) {
         return Jwts
                 .builder()
                 .claims(claims)
@@ -38,6 +40,10 @@ public class JWTUtil {
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String generateToken(User userdetails){
+        return generateToken(new HashMap<>(), userdetails);
     }
 
     public boolean isTokenExpired(String token) {

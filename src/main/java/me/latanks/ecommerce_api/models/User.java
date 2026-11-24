@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import me.latanks.ecommerce_api.models.enums.Roles;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,7 +29,7 @@ public class User {
 
     @NotEmpty
     @NotNull
-    @Size(min = 2, max = 20)
+
     private String password;
 
     @Email
@@ -54,12 +55,38 @@ public class User {
     private String state;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Set<Product> purchasedProducts;
+    private Set<Purchase> purchasedProducts;
 
-    private Set<Roles>  roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Set<Product> cart;
+
+    private Set<Roles>  roles = new HashSet<>();
+
+    public User(Long id, String username, String fullName, String password, String email, String cpf, String phone, String address, String city, String state, Set<Purchase> purchasedProducts, Set<Product> cart, Set<Roles> roles) {
+        this.id = id;
+        this.username = username;
+        this.fullName = fullName;
+        this.password = password;
+        this.email = email;
+        this.cpf = cpf;
+        this.phone = phone;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.purchasedProducts = purchasedProducts;
+        this.cart = cart;
+        this.roles = roles;
+    }
+
+    public User() {
+    }
 
     public Set<Roles> getRoles() {
         return roles;
+    }
+
+    public void addRole(Roles role) {
+        this.roles.add(role);
     }
 
     public void setRoles(Set<Roles> roles) {
@@ -146,11 +173,11 @@ public class User {
         this.state = state;
     }
 
-    public Set<Product> getPurchasedProducts() {
+    public Set<Purchase> getPurchasedProducts() {
         return purchasedProducts;
     }
 
-    public void setPurchasedProducts(Set<Product> purchasedProducts) {
+    public void setPurchasedProducts(Set<Purchase> purchasedProducts) {
         this.purchasedProducts = purchasedProducts;
     }
 }
